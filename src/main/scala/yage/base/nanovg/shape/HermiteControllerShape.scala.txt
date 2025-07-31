@@ -1,0 +1,138 @@
+package yage.base.vg.shape
+
+import org.joml.Vector2f
+import yage.base.fw.input.Keyboard
+import yage.base.fw.input.Mouse
+import yage.base.vg.vgContext
+import yage.base.vg.shape.HermiteControllerShape.*
+import yage.core.FMath
+import FMath.ccw
+import yage.base.vg.state.vgColor
+
+// this is more than a shape!
+
+object HermiteControllerShape:
+
+  var baseRadius = 12.0f
+  var stemWidthFactor = 0.5f
+  var headLengthFactor = 3.0f
+  var headWidthFactor = 2.0f
+
+  val normalColor = vgColor(0.8f, 0.8f, 0.8f)
+  val highlightColor = vgColor(0.2f, 0.8f, 0.2f)
+
+  enum Part:
+    case None, Base, Stem, Head
+
+class HermiteControllerShape extends vgShape:
+
+  var p1 = Vector2f()
+  var p2 = Vector2f()
+
+  private val dir = Vector2f()
+  private val nor = Vector2f()
+  private val sa = Vector2f()
+  private val sb = Vector2f()
+  private val sc = Vector2f()
+  private val sd = Vector2f()
+  private val ha = Vector2f()
+  private val hb = Vector2f()
+  private val hc = Vector2f()
+
+  private var highlight = Part.None
+
+  def set(x1: Float, y1: Float, x2: Float, y2: Float) =
+    p1.set(x1, y1)
+    p2.set(x2, y2)
+    update()
+    this
+
+  override def build(): Unit = ???  
+/*
+  override def fill() =
+    Context.setFillColor(normalColor)
+    fillBase()
+    fillStem()
+    fillHead()
+    Context.setFillColor(highlightColor)
+    if highlight == Part.Base then fillBase()
+    if highlight == Part.Head then fillHead()
+*/
+  //TODO
+  
+//  override def addListeners() =
+//    Mouse.movedListeners += mouseMoved
+//    Mouse.draggedListeners += mouseDragged
+//
+//  override def removeListeners() =
+//    Mouse.movedListeners -= mouseMoved
+//    Mouse.draggedListeners -= mouseDragged
+
+  private def update() =
+    val sw = baseRadius * stemWidthFactor
+    val hl = baseRadius * headLengthFactor
+    val hw = baseRadius * headWidthFactor
+    val len = p1.distance(p2)
+    // dir.toDifferenceOf(p2, p1).normalize()
+    dir.set(p2).sub(p1).normalize() // ???
+    nor.set(dir.y, -dir.x)
+    // TODO sa.set(p1).add(nor, sw * -0.5f)
+    // TODO sb.set(sa).add(dir, +len)
+    // TODO sc.set(sb).add(nor, sw)
+    // TODO sd.set(sc).add(dir, -len)
+    // TODO ha.set(p2).add(nor, hw * -0.5f)
+    // TODO hb.set(p2).add(dir, hl)
+    // TODO hc.set(p2).add(nor, hw * +0.5f)
+
+/*  
+  private def fillBase() =
+    ctx.path.begin()
+    ctx.path.circle(p1, baseRadius)
+    ctx.fill()
+
+  private def fillStem() =
+    ctx.path.begin()
+    ctx.path.moveTo(sa)
+    ctx.path.lineTo(sb)
+    ctx.path.lineTo(sc)
+    ctx.path.lineTo(sd)
+    ctx.path.close()
+    ctx.fill()
+
+  private def fillHead() =
+    ctx.path.begin()
+    ctx.path.moveTo(ha)
+    ctx.path.lineTo(hb)
+    ctx.path.lineTo(hc)
+    ctx.path.close()
+    ctx.fill()
+*/
+  private def baseContains(x: Float, y: Float) =
+    p1.distance(x, y) < baseRadius
+
+  private def headContains(x: Float, y: Float) =
+    FMath.ccw(ha, hb, x, y) && ccw(hb, hc, x, y) && ccw(hc, ha, x, y)
+
+  private def mouseMoved(x: Float, y: Float, dx: Float, dy: Float) =
+    if baseContains(x, y) then highlight = Part.Base
+    else if headContains(x, y) then highlight = Part.Head
+    else highlight = Part.None
+
+  private def mouseDragged(x: Float, y: Float, dx: Float, dy: Float) =
+    if highlight == Part.Base then
+      p1.set(p1.x + dx, p1.y + dy)
+      p2.set(p2.x + dx, p2.y + dy)
+      update()
+    else if highlight == Part.Head then
+      p2.set(p2.x + dx, p2.y + dy)
+      update()
+
+
+/*
+  private def stemContains(x: Float, y: Float) = 
+    ccw(sa, sb, x, y) && ccw(sb, sc, x, y) && ccw(sc, sd, x, y) && ccw(sd, sa, x, y)
+
+  private def contains(x: Float, y: Float) = 
+    baseContains(x, y) || stemContains(x, y) || headContains(x, y)
+
+*/
