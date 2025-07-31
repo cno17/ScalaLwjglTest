@@ -1,0 +1,11 @@
+package test.scene
+
+import yage.base.glfw.GlApp
+import yage.scene.program.LightProgram
+
+object PhongBlinnProgramTest extends GlApp:
+
+  override def init() =
+    val p = LightProgram()
+    p.uniformVariableNames.foreach(u => println(u))
+    System.exit(0)
