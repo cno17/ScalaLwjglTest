@@ -1,0 +1,109 @@
+package test.lwjgl.gl.draw.points
+
+import org.lwjgl.BufferUtils
+import org.lwjgl.opengl.GL11C.*
+import org.lwjgl.system.MemoryUtil
+import yage.lwjgl.ByteBufferUtil
+import yage.lwjgl.gl.primitive.AttributeFormat.F32_2
+import yage.lwjgl.gl.primitive.AttributeFormat.F32_4
+import yage.lwjgl.gl.primitive.VertexArray
+import yage.lwjgl.gl.resource.buffer.Buffer
+import yage.lwjgl.gl.resource.buffer.BufferStorageFlags
+import yage.lwjgl.gl.shader.program.Program
+import yage.lwjgl.glfw.GlApp
+
+import java.io.File
+
+/**
+ *
+ */
+
+object Points extends GlApp, ByteBufferUtil:
+
+  var va: VertexArray = null
+  var dp: Program = null
+
+  override def init() =
+    va = vaInterleaved()
+    dp = Program(srcFile("Draw.vert"), srcFile("Draw.frag"))
+    glClearColor(0, 0, 0, 1)
+    glPointSize(10)
+    println(128.toByte)
+
+  override def draw() =
+    glClear(GL_COLOR_BUFFER_BIT)
+    va.bind()
+    dp.bind()
+    glDrawArrays(GL_POINTS, 0, 3)
+
+  // (p0, c0, p1, c1, p2, c2)
+  def vaInterleaved() =
+    val data = Array(
+      0.0f, 0.0f,
+      1f, 0f, 0f, 1f,
+      0.8f, 0.0f,
+      0f, 1f, 0f, 1f,
+      0.0f, 0.8f,
+      0f, 0f, 1f, 1f
+    )
+    val vb = Buffer(data, BufferStorageFlags())
+    val va = VertexArray()
+    va.bindVertexBuffer(0, vb, 0, 24)
+    va.enableAttribute(0)
+    va.enableAttribute(1)
+    va.setAttributeFormat(0, F32_2, 0)
+    va.setAttributeFormat(1, F32_4, 8)
+    va.setAttributeBinding(0, 0)
+    va.setAttributeBinding(1, 0)
+    va
+
+  // (p0, c0, p1, c1, p2, c2)
+  def vaInterleavedNormalized() =
+    val posA = Array(
+      0.0f, 0.0f,
+      0.8f, 0.0f,
+      0.0f, 0.8f,
+    )
+    val colA = Array(
+      255, 0, 0, 255,
+      0, 255, 0, 255,
+      0, 0, 255, 255
+    )
+    val data = BufferUtils.createByteBuffer(36)
+    data.putFloat(0).putFloat(0)
+    data.put(127.toByte).put(0.toByte).put(0.toByte).put(127.toByte)
+    data.putFloat(0.8f).putFloat(0)
+    data.put(127.toByte).put(127.toByte).put(0.toByte).put(127.toByte)
+    data.putFloat(0).putFloat(0.8f)
+    data.put(0.toByte).put(0.toByte).put(127.toByte).put(127.toByte)
+    val vb = Buffer(data, BufferStorageFlags())
+    val va = VertexArray()
+    va.bindVertexBuffer(0, vb, 0, 12)
+    va.enableAttribute(0)
+    va.enableAttribute(1)
+    va.setAttributeFormat(0, F32_2, 0)
+    va.setAttributeFormat(1, F32_4, 8, true)
+    va.setAttributeBinding(0, 0)
+    va.setAttributeBinding(1, 0)
+    va
+
+  // (p0, p1, p2, c0, c1, c2)
+  def vaSeparated() =
+    val data = Array(
+      0.0f, 0.0f,
+      0.8f, 0.0f,
+      0.0f, 0.8f,
+      1f, 0f, 0f, 1f,
+      0f, 1f, 0f, 1f,
+      0f, 0f, 1f, 1f
+    )
+    val vb = Buffer(data, BufferStorageFlags())
+    val va = VertexArray()
+    va.bindVertexBuffer(0, vb, 0, 24)
+    va.enableAttribute(0)
+    va.enableAttribute(1)
+    va.setAttributeFormat(0, F32_2, 0)
+    va.setAttributeFormat(1, F32_4, 8)
+    va.setAttributeBinding(0, 0)
+    va.setAttributeBinding(1, 0)
+    va
