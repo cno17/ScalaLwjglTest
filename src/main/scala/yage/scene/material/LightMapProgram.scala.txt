@@ -1,0 +1,57 @@
+package yage.scene.program
+
+import yage.base.gl.shader.Shader
+import yage.base.gl.shader.program.Program
+import yage.scene.light.PointLight
+import yage.scene.light.SpotLight
+import yage.scene.light.StarLight
+import yage.scene.material.LightMaterial
+
+import java.io.File
+
+object LightProgram:
+
+  def apply() =
+    val p = new LightProgram()
+    p.attach(Shader(resFile("Shaders/Light.vert")))
+    p.attach(Shader(resFile("Shaders/Light.frag")))
+    if !p.link() then throw Exception(p.infoLog)
+    p
+
+  def resDir = File(getClass.getClassLoader.getResource(".").toURI)
+  def resFile(path: String) = File(resDir, path)
+
+
+class LightProgram extends Program:
+
+  def setLight(l: PointLight) =
+    val p = l.posV
+    setUniform("pointLight.posV", p.x, p.y, p.z, 1f)
+    setUniform("pointLight.ambientColor", l.ambientColor)
+    setUniform("pointLight.diffuseColor", l.diffuseColor)
+    setUniform("pointLight.specularColor", l.specularColor)
+
+  def setLight(l: StarLight) =
+    val p = l.dirV
+    setUniform("starLight.dirV", p.x, p.y, p.z, 1f)
+    setUniform("starLight.ambientColor", l.ambientColor)
+    setUniform("starLight.diffuseColor", l.diffuseColor)
+    setUniform("starLight.specularColor", l.specularColor)
+
+  def setLight(l: SpotLight) =
+    val p = l.posV
+    val d = l.dirV
+    setUniform("spotLight.posV", p.x, p.y, p.z, 1f)
+    setUniform("spotLight.dirV", d.x, d.y, d.z, 0f)
+    setUniform("spotLight.ambientColor", l.ambientColor)
+    setUniform("spotLight.diffuseColor", l.diffuseColor)
+    setUniform("spotLight.specularColor", l.specularColor)
+  // todo
+
+  def setMaterial(m: LightMaterial) =
+    setUniform("material.ambientColor", m.ambientColor)
+    if m.diffuseMap != null then setUniform("material.diffuseMap", m.diffuseMap.textureUnitBinding)
+    else setUniform("material.diffuseColor", m.diffuseColor)
+    if m.specularMap == null then setUniform("material.specularMap", m.specularMap.textureUnitBinding)
+    else setUniform("material.specularColor", m.specularColor)
+    setUniform("material.shininess", m.shininess)
