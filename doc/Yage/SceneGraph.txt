@@ -1,0 +1,25 @@
+
+
+- Spatial
+    - Node
+        - Camera
+        - Light
+        - Model
+        - Sound
+        - Music
+    
+// drop Leaf and Branch    
+    
+- Node:
+    - parent: Node
+    - children: ArrayBuffer[Node]
+    - controllers: ArrayNuffer[Controller]
+    - localTrafo: Matrix4x3    
+    - worldTrafo: Matrix4x3
+    - localBound: Sphere    
+    - worldBound: Sphere
+    - update()
+    - draw()    
+    
+// drop, pos, vel, acc
+// use KinematicController instead of KinematicNode     

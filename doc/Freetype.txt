@@ -1,0 +1,68 @@
+
+
+  **************
+  *   MANUAL   *
+  **************
+
+===============================================================================
+  BASIC TYPOGRAPHIC CONCEPTS
+===============================================================================
+
+- a font family contains multiple font faces which differ in style but
+  come from the same template
+
+- a font face contains character images (glyphs) and character metrics
+
+- a single character can have multiple glyphs and multiple characters can
+  be represented by a single glyph: the relation between characters and glyphs
+  can be very complex
+
+- a glyph can be stored as a bitmap or as a "vector representation"
+
+- the glyphs can be stored in any order in the font file and are typically
+  accessed through a simple glyph index
+
+- a font file contains one or more tables (character maps) which convert
+  character codes for a given encoding to glyph indices
+
+- ...
+
+===============================================================================
+  GLYPH OUTLINES
+===============================================================================
+
+  PIXELS, POINTS AND DEVICE RESOLUTIONS
+
+- an outline is a scalable representations of a glyph image
+
+- the pixels of an output device are not always squares
+
+- a point equals 1/72 of an inch in digital typography: 1 inch (zoll) = 2.54 cm
+
+- the resolution of a device is given by two integers: dots per inch (dpi)
+  in horizontal and vertical direction
+
+- the size of text is usually given in points, rather than device-specific pixels
+
+  VECTORIAL REPRESENTATION
+
+===============================================================================
+  GLYPH METRICS
+===============================================================================
+
+===============================================================================
+  KERNING
+===============================================================================
+
+===============================================================================
+  TEXT PROCESSING
+===============================================================================
+
+===============================================================================
+  OUTLINES
+===============================================================================
+
+===============================================================================
+  BITMAPS
+===============================================================================
+

@@ -1,0 +1,14 @@
+
+
+
+  STREAMS
+
+- a serial cuda program consists of three steps:
+    - copy data from host to device
+    - execute kernel
+    - copy data from device to host
+
+- this can be accelerated if some kernel instances can be executed
+  before the whole data has been copied
+
+- a stream is a sequence of commands that are executed in order

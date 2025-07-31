@@ -1,0 +1,6 @@
+
+
+PAGE LOCKED (PINNED) MEMORY (PLM)
+
+
+PLM plays a critical role in the data transfer between host and device
