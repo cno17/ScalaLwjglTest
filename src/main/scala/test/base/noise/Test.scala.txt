@@ -1,0 +1,22 @@
+package test.base.noise
+
+import noise.FastNoiseLite
+
+import java.awt.BorderLayout
+import javax.swing.JFrame
+import javax.swing.WindowConstants
+
+object Test:
+
+  def main(args: Array[String]) =
+    val noise = FastNoiseLite(System.currentTimeMillis().toInt)
+    val view = ImageView(Image(512, noise).toBufferedImage())
+    val controller = NoiseController(noise, view)
+    val frame = JFrame()
+    frame.getContentPane().setLayout(BorderLayout())
+    frame.getContentPane().add(view, BorderLayout.CENTER)
+    frame.getContentPane().add(controller, BorderLayout.EAST)
+    frame.setSize(800, 600)
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
+    frame.setVisible(true)
+

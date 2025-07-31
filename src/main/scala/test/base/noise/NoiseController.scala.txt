@@ -1,0 +1,151 @@
+package test.base.noise
+
+import noise.FastNoiseLite
+
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
+import javax.swing.Box
+import javax.swing.BoxLayout
+import javax.swing.JComboBox
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JSlider
+import javax.swing.border.EmptyBorder
+import javax.swing.event.ChangeEvent
+import javax.swing.event.ChangeListener
+
+class NoiseController(val noise: FastNoiseLite, val view: ImageView)
+  extends JPanel, ActionListener, ChangeListener:
+
+  var imageSize = 512
+
+  val cellularDistanceFunction = Array(
+    "Euclidean",
+    "EuclideanSquared",
+    "Manhattan",
+    "Hybrid",
+  )
+
+  val cellularReturnType = Array(
+    "CellValue",
+    "Distance",
+    "Distance2",
+    "Distance2Add",
+    "Distance2Sub",
+    "Distance2Mul",
+    "Distance2Div"
+  )
+
+  val domainWarpType = Array(
+    "BasicGrid",
+    "OpenSimplex2",
+    "OpenSimplex2Reduced"
+  )
+
+  val fractalType = Array(
+    "None",
+    "Ridged",
+    "PingPong",
+    "FBm",
+    "DomainWarpIndependent",
+    "DomainWarpProgressive"
+  )
+
+  val noiseType = Array(
+    "Value",
+    "ValueCubic",
+    "Perlin",
+    "Cellular",
+    "OpenSimplex2",
+    "OpenSimplex2S",
+  )
+
+  val rotationType3D = Array(
+    "ImproveXYPlanes",
+    "ImproveXZPlanes",
+    "None",
+  )
+
+  val transformType3D = Array(
+    "DefaultOpenSimplex2",
+    "ImproveXYPlanes",
+    "ImproveXZPlanes",
+    "None",
+  )
+
+  init()
+
+  def init() =
+    setLayout(BoxLayout(this, BoxLayout.Y_AXIS))
+    setPreferredSize(Dimension(200, 2000))
+    setMaximumSize(Dimension(200, 2000))
+    setBorder(EmptyBorder(10, 10, 10, 10))
+    // setBorder(LineBorder(Color.BLUE))
+
+    add(newRow("octaves", newSlider("octaveSlider", 1, 10, 3)))
+    add(newRow("frequency", newSlider("frequencySlider", 0, 100, 50)))
+    add(newRow("fractal gain", newSlider("fractalGainSlider", 0, 100, 50)))
+    add(newRow("noise type", newCombo("noiseTypeCombo", noiseType)))
+    add(newRow("fractal type", newCombo("fractalTypeCombo", fractalType)))
+    add(Box.createVerticalStrut(1000))
+
+  def newRow(text: String, comp: Component) =
+    val res = Box(BoxLayout.X_AXIS)
+    res.setBorder(EmptyBorder(10, 10, 10, 10))
+    // res.setBorder(LineBorder(Color.BLUE))
+    res.add(JLabel(text))
+    res.add(Box.createHorizontalStrut(10))
+    res.add(comp)
+    res
+
+  def newSlider(name: String, min: Int, max: Int, value: Int) =
+    val res = JSlider(min, max, value)
+    res.setName(name)
+    res.setPreferredSize(Dimension(1000, 25))
+    res.setMinimumSize(Dimension(10, 25))
+    res.addChangeListener(this)
+    res
+
+  def newCombo(name: String, items: Array[String]) =
+    val res = JComboBox(items)
+    res.setName(name)
+    res.setPreferredSize(Dimension(1000, 25))
+    res.setMaximumSize(Dimension(1000, 25))
+    res.addActionListener(this)
+    res
+
+  def updateView() =
+    view.setImage(Image(imageSize, noise).toBufferedImage())
+
+  override def actionPerformed(e: ActionEvent) =
+    val combo = e.getSource.asInstanceOf[JComboBox[String]]
+    val name = combo.getName
+    val item = combo.getSelectedItem.toString
+    if name == "noiseTypeCombo" then
+      if item == "Value" then noise.SetNoiseType(FastNoiseLite.NoiseType.Value)
+      if item == "ValueCubic" then noise.SetNoiseType(FastNoiseLite.NoiseType.ValueCubic)
+      if item == "Perlin" then noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin)
+      if item == "Cellular" then noise.SetNoiseType(FastNoiseLite.NoiseType.Cellular)
+      if item == "OpenSimplex2" then noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2)
+      if item == "OpenSimplex2S" then noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S)
+    if name == "fractalTypeCombo" then
+      if item == "None" then noise.SetFractalType(FastNoiseLite.FractalType.None)
+      if item == "Ridged" then noise.SetFractalType(FastNoiseLite.FractalType.Ridged)
+      if item == "FBm" then noise.SetFractalType(FastNoiseLite.FractalType.FBm)
+      if item == "PingPong" then noise.SetFractalType(FastNoiseLite.FractalType.PingPong)
+      if item == "DomainWarpIndependent" then noise.SetFractalType(FastNoiseLite.FractalType.DomainWarpIndependent)
+      if item == "DomainWarpProgressive" then noise.SetFractalType(FastNoiseLite.FractalType.DomainWarpProgressive)
+
+    updateView()
+
+  override def stateChanged(e: ChangeEvent) =
+    val slider = e.getSource.asInstanceOf[JSlider]
+    if slider.getName == "octaveSlider" then
+      noise.SetFractalOctaves(slider.getValue)
+    if slider.getName == "frequencySlider" then
+      noise.SetFrequency(slider.getValue.toFloat * 0.001f)
+    if slider.getName == "fractalGainSlider" then
+      noise.SetFractalGain(slider.getValue.toFloat * 0.01f)
+    updateView()

@@ -1,0 +1,37 @@
+package test.base.noise
+
+import noise.FastNoiseLite
+
+import java.awt.Color
+import java.awt.image.BufferedImage
+
+// todo: isToroidal
+
+class Image(val size: Int, noise: FastNoiseLite):
+
+  val values = createValues()
+
+  def toBufferedImage() =
+    val res = BufferedImage(size, size, BufferedImage.TYPE_BYTE_GRAY)
+    for i <- 0 to size - 1 do
+      for j <- 0 to size - 1 do
+        val v = values(i)(j)
+        res.setRGB(i, j, Color(v, v, v).getRGB)
+    res
+
+  private def createValues() =
+    val res = Array.ofDim[Float](size, size)
+    var min = Float.MaxValue
+    var max = Float.MinValue
+    for i <- 0 to size - 1 do
+      for j <- 0 to size - 1 do
+        val v = noise.GetNoise(i, j)
+        res(i)(j) = noise.GetNoise(i, j)
+        if v < min then min = v
+        if v > max then max = v
+    val dif = max - min
+    for i <- 0 to size - 1 do
+      for j <- 0 to size - 1 do
+        val v = res(i)(j)
+        res(i)(j) = (v - min) / dif
+    res

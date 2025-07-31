@@ -1,0 +1,35 @@
+package test.base.vg.ui
+
+import org.joml.Vector2f
+import yage.base.fw.GlApp
+import yage.base.fw.window.EventMode
+import yage.base.fw.window.Window
+import yage.base.fw.window.WindowCreateInfo
+import yage.base.vg.Color
+import yage.base.vg.Context
+import yage.base.vg.state.State
+import yage.base.vg.ui.BoxShape
+
+object BoxTest extends GlApp:
+
+  var box: BoxShape = null
+
+  override def info() =
+    val res = WindowCreateInfo()
+    res.sizeX = 1200
+    res.sizeY = 900
+    res.eventMode = EventMode.Wait
+    res
+
+  override def init() =
+    box = BoxShape(Vector2f(300, 100), Vector2f(700, 300))
+    // box.addListenersTo(keyboard, mouse)
+    Context.setClearColor(Color(0, 0, 0))
+
+  override def draw() =
+    val sx = Window.sizeX
+    val sy = Window.sizeY
+    Context.clear()
+    Context.beginFrame(sx, sy)
+    // box.draw()
+    Context.endFrame()

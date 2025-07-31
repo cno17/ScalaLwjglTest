@@ -1,0 +1,43 @@
+package test.base.vg.shape
+
+import yage.base.fw.GlApp
+import yage.base.fw.window.EventMode.Wait
+import yage.base.fw.window.EventMode
+import yage.base.fw.window.Window
+import yage.base.fw.window.WindowCreateInfo
+import yage.base.vg.vgContext
+import yage.base.vg.shape.HermiteControllerShape
+import yage.base.vg.state.vgColor
+import yage.core.FMath
+
+import scala.util.Random
+
+object HermiteTest extends GlApp:
+
+  var n = 10
+  var controllers = new Array[HermiteControllerShape](n)
+
+  override def info() =
+    val res = WindowCreateInfo()
+    res.sizeX = 1200
+    res.sizeY = 900
+    res.eventMode = Wait
+    res
+
+  override def init() =
+    val sx = Window.sizeX
+    val sy = Window.sizeY
+    for i <- 0 to n - 1 do
+      val x1 = 100f + FMath.rndI(0, sx - 200)
+      val y1 = 100f + FMath.rndI(0, sy - 200)
+      val x2 = x1 - 100f + FMath.rndI(0, 200)
+      val y2 = y1 - 100f + FMath.rndI(0, 200)
+      controllers(i) = HermiteControllerShape().set(x1, y1, x2, y2)
+      // controllers(i).addListenersTo(keyboard, mouse)
+    vgContext.setClearColor(vgColor(0, 0, 0))
+
+  override def draw() =
+    vgContext.clear()
+    vgContext.beginFrame(Window.sizeX, Window.sizeY)
+    // controllers.foreach(_.fill())
+    vgContext.endFrame()
