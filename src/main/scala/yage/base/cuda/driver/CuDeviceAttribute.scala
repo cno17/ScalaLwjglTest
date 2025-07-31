@@ -1,0 +1,20 @@
+package yage.base.cuda.driver
+
+import jcuda.driver.CUdevice_attribute.*
+
+enum CuDeviceAttribute(val id: Int):
+
+  case AsyncEngineCount extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_ASYNC_ENGINE_COUNT)
+  case CanFlushRemoteWrites extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CAN_FLUSH_REMOTE_WRITES)
+  case CanMapHostMemory extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CAN_MAP_HOST_MEMORY)
+  case CanUse64BitStreamMemOps extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CAN_USE_64_BIT_STREAM_MEM_OPS)
+  case CanUse64BitStreamMemOpsV1 extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CAN_USE_64_BIT_STREAM_MEM_OPS_V1)
+  case CanUseHostPointerForRegisteredMem extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CAN_USE_HOST_POINTER_FOR_REGISTERED_MEM)
+  case CanUseStreamMemOpsV1 extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CAN_USE_STREAM_MEM_OPS_V1)
+  case CanUseStreamWaitValueNor extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CAN_USE_STREAM_WAIT_VALUE_NOR)
+  case CanUseStreamWaitValueNorV1 extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CAN_USE_STREAM_WAIT_VALUE_NOR_V1)
+  case ClockRate extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CLOCK_RATE)
+  case ClusterLaunch extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_CLUSTER_LAUNCH)
+  case ComputeCapabilityMajor extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR)
+  case ComputeCapabilityMinor extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR)
+  case ComputeMode extends CuDeviceAttribute(CU_DEVICE_ATTRIBUTE_COMPUTE_MODE)
