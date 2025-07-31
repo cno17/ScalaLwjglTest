@@ -1,5 +1,0 @@
-
-
-- backends:
-    - platform
-    - renderer
